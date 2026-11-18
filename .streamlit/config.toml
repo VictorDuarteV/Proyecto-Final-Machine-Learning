@@ -1,0 +1,14 @@
+[theme]
+base = "light"
+primaryColor = "#0E4F5C"
+backgroundColor = "#F5F3EE"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#1C2B33"
+borderColor = "#D6D0C4"
+baseRadius = "10px"
+showWidgetBorder = true
+font = "Montserrat:https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+headingFontWeights = 600
+
+[client]
+toolbarMode = "minimal"

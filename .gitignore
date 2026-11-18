@@ -1,0 +1,11 @@
+# Datos de ADNI: su acuerdo de uso no permite redistribuirlos
+local/
+*.csv
+!datos/perfiles_sinteticos.csv
+
+__pycache__/
+.venv/
+venv/
+.streamlit/secrets.toml
+.ipynb_checkpoints/
+app-*.py

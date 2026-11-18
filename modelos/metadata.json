@@ -1,0 +1,196 @@
+{
+  "variables_originales": [
+    "Edad",
+    "Escolaridad",
+    "ICV",
+    "Left_Hippocampus",
+    "Right_Hippocampus",
+    "lh_entorhinal_volume",
+    "rh_entorhinal_volume",
+    "Left_Lateral_Ventricle",
+    "Right_Lateral_Ventricle",
+    "Left_Inf_Lat_Vent",
+    "Right_Inf_Lat_Vent",
+    "Left_Amygdala",
+    "Right_Amygdala",
+    "lh_MeanThickness_thickness",
+    "rh_MeanThickness_thickness",
+    "CortexVol",
+    "APOE4",
+    "Sexo"
+  ],
+  "variables_modelo": [
+    "Edad",
+    "Escolaridad",
+    "APOE4",
+    "Sexo",
+    "Grosor_medio",
+    "Hipocampo_total_ICV",
+    "Entorrinal_total_ICV",
+    "Amigdala_total_ICV",
+    "Ventriculos_total_ICV",
+    "Vent_inferior_total_ICV",
+    "CortexVol_ICV"
+  ],
+  "etiquetas_variables": {
+    "Edad": "Edad",
+    "Escolaridad": "Escolaridad",
+    "APOE4": "APOE4",
+    "Sexo": "Sexo",
+    "Hipocampo_total_ICV": "Hipocampo / ICV",
+    "Entorrinal_total_ICV": "Entorrinal / ICV",
+    "Amigdala_total_ICV": "Amígdala / ICV",
+    "Ventriculos_total_ICV": "Ventrículos laterales / ICV",
+    "Vent_inferior_total_ICV": "Ventrículo lat. inferior / ICV",
+    "CortexVol_ICV": "Corteza / ICV",
+    "Grosor_medio": "Grosor cortical medio"
+  },
+  "clases": {
+    "0": "CN",
+    "1": "Dementia"
+  },
+  "categorias_sexo": [
+    "Femenino",
+    "Masculino"
+  ],
+  "rangos_train": {
+    "Edad": {
+      "min": 50.4503764544832,
+      "max": 90.861054072553,
+      "mediana": 71.5701574264203
+    },
+    "Escolaridad": {
+      "min": 4.0,
+      "max": 20.0,
+      "mediana": 16.0
+    },
+    "ICV": {
+      "min": 833279.0411,
+      "max": 2030581.974,
+      "mediana": 1480673.864
+    },
+    "Left_Hippocampus": {
+      "min": 1450.275617,
+      "max": 5176.802657,
+      "mediana": 3612.693394
+    },
+    "Right_Hippocampus": {
+      "min": 1615.992691,
+      "max": 5388.162881,
+      "mediana": 3740.227652
+    },
+    "lh_entorhinal_volume": {
+      "min": 551.2946591,
+      "max": 3601.686557,
+      "mediana": 1883.255562
+    },
+    "rh_entorhinal_volume": {
+      "min": 399.6595832,
+      "max": 3626.440065,
+      "mediana": 1837.618248
+    },
+    "Left_Lateral_Ventricle": {
+      "min": 1904.260411,
+      "max": 73639.87306,
+      "mediana": 15139.50494
+    },
+    "Right_Lateral_Ventricle": {
+      "min": 1324.741145,
+      "max": 63634.44675,
+      "mediana": 13843.67329
+    },
+    "Left_Inf_Lat_Vent": {
+      "min": 8.473863954,
+      "max": 5459.50293,
+      "mediana": 580.0151071
+    },
+    "Right_Inf_Lat_Vent": {
+      "min": 36.62707941,
+      "max": 7157.127827,
+      "mediana": 557.5924687
+    },
+    "Left_Amygdala": {
+      "min": 292.7719036,
+      "max": 2215.656531,
+      "mediana": 1369.651031
+    },
+    "Right_Amygdala": {
+      "min": 504.1348838,
+      "max": 2452.78309,
+      "mediana": 1532.424145
+    },
+    "lh_MeanThickness_thickness": {
+      "min": 1.901409192,
+      "max": 2.671000213,
+      "mediana": 2.357412508
+    },
+    "rh_MeanThickness_thickness": {
+      "min": 1.875424888,
+      "max": 2.702357712,
+      "mediana": 2.356268739
+    },
+    "CortexVol": {
+      "min": 275702.9305,
+      "max": 551681.7915,
+      "mediana": 417309.7907
+    },
+    "APOE4": {
+      "min": 0.0,
+      "max": 2.0,
+      "mediana": 0.0
+    }
+  },
+  "modelos": {
+    "stacking": {
+      "archivo": "stacking.joblib",
+      "nombre": "Stacking",
+      "tipo_puntaje": "decision",
+      "umbral": 0.0,
+      "metricas_test": {
+        "Accuracy": 0.9138,
+        "Balanced Accuracy": 0.9008,
+        "Precision": 0.7955,
+        "Recall": 0.875,
+        "F1": 0.8333,
+        "ROC-AUC": 0.9596
+      }
+    },
+    "svm": {
+      "archivo": "svm.joblib",
+      "nombre": "SVM polinomial optimizado",
+      "tipo_puntaje": "decision",
+      "umbral": 0.0,
+      "metricas_test": {
+        "Accuracy": 0.9138,
+        "Balanced Accuracy": 0.8923,
+        "Precision": 0.8095,
+        "Recall": 0.85,
+        "F1": 0.8293,
+        "ROC-AUC": 0.9618
+      }
+    },
+    "logistica": {
+      "archivo": "logistica.joblib",
+      "nombre": "Logística optimizada",
+      "tipo_puntaje": "decision",
+      "umbral": 0.0,
+      "metricas_test": {
+        "Accuracy": 0.8923,
+        "Balanced Accuracy": 0.8823,
+        "Precision": 0.7419,
+        "Recall": 0.8625,
+        "F1": 0.7977,
+        "ROC-AUC": 0.9427
+      }
+    }
+  },
+  "versiones": {
+    "python": "3.13.18",
+    "scikit-learn": "1.6.1",
+    "xgboost": "3.4.1",
+    "shap": "0.54.1",
+    "numpy": "2.4.6",
+    "pandas": "2.2.3",
+    "joblib": "1.6.0"
+  }
+}

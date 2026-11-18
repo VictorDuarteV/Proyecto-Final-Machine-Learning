@@ -1,0 +1,80 @@
+{
+  "nota": "Resultados del notebook Proyecto_Final_ADNI_Victor_Duarte.ipynb (ejecución del 9 de noviembre de 2026). Test: 325 pacientes (245 CN, 80 Dementia).",
+  "modelos": {
+    "stacking": {
+      "nombre": "Stacking",
+      "familia": "Ensamble",
+      "configuracion": "Modelos base: Regresión Logística, SVM polinomial y Gradient Boosting balanceado; metamodelo: Regresión Logística (class_weight = balanced), validación interna de 5 folds",
+      "cv_repetida": {
+        "media": 0.8922,
+        "desv": 0.0246,
+        "recall": 0.8656
+      },
+      "test": {
+        "Accuracy": 0.9138,
+        "Balanced Accuracy": 0.9008,
+        "Precision": 0.7955,
+        "Recall": 0.875,
+        "F1": 0.8333,
+        "ROC-AUC": 0.9596,
+        "Especificidad": 0.9265
+      },
+      "matriz_confusion": {
+        "TN": 227,
+        "FP": 18,
+        "FN": 10,
+        "TP": 70
+      }
+    },
+    "svm": {
+      "nombre": "SVM polinomial",
+      "familia": "Kernel",
+      "configuracion": "kernel polinomial de grado 2, coef0 = 1, C = 1, class_weight = balanced",
+      "cv_repetida": {
+        "media": 0.8916,
+        "desv": 0.0275,
+        "recall": 0.8506
+      },
+      "test": {
+        "Accuracy": 0.9138,
+        "Balanced Accuracy": 0.8923,
+        "Precision": 0.8095,
+        "Recall": 0.85,
+        "F1": 0.8293,
+        "ROC-AUC": 0.9618,
+        "Especificidad": 0.9347
+      },
+      "matriz_confusion": {
+        "TN": 229,
+        "FP": 16,
+        "FN": 12,
+        "TP": 68
+      }
+    },
+    "logistica": {
+      "nombre": "Regresión Logística",
+      "familia": "Lineal",
+      "configuracion": "regularización L2, C = 0.01, class_weight = balanced",
+      "cv_repetida": {
+        "media": 0.8888,
+        "desv": 0.0205,
+        "recall": 0.8819
+      },
+      "test": {
+        "Accuracy": 0.8923,
+        "Balanced Accuracy": 0.8823,
+        "Precision": 0.7419,
+        "Recall": 0.8625,
+        "F1": 0.7977,
+        "ROC-AUC": 0.9427,
+        "Especificidad": 0.902
+      },
+      "matriz_confusion": {
+        "TN": 221,
+        "FP": 24,
+        "FN": 11,
+        "TP": 69
+      }
+    }
+  }
+}
