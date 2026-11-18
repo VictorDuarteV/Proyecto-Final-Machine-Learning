@@ -5,7 +5,7 @@ Alumno: Victor Francisco Duarte Villalobos (403230).
 Facultad de Ingeniería UACH
 Asesora: Dra. Olanda Prieto Ordaz.
 
-**Aplicación en línea:** https://proyecto-final-ml.streamlit.app
+**Aplicación en línea:** https://proyecto-final-ml-adni.streamlit.app
 
 El repositorio contiene dos partes:
 
