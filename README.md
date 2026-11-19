@@ -1,10 +1,11 @@
 # Clasificación de demencia con ADNI — Proyecto Final de Machine Learning
 
-Proyecto Final de la materia Machine Learning (Maestría en Ingeniería en Computación, Facultad de
-Ingeniería, Universidad Autónoma de Chihuahua). Alumno: Victor Francisco Duarte Villalobos (403230).
+Proyecto Final Machine Learning
+Alumno: Victor Francisco Duarte Villalobos (403230).
+Facultad de Ingeniería UACH
 Asesora: Dra. Olanda Prieto Ordaz.
 
-**Aplicación en línea:** https://proyecto-final-ml.streamlit.app
+**Aplicación en línea:** https://proyecto-final-ml-adni.streamlit.app
 
 El repositorio contiene dos partes:
 
