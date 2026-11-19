@@ -1,7 +1,7 @@
 perfil,Edad,Escolaridad,ICV,Left_Hippocampus,Right_Hippocampus,lh_entorhinal_volume,rh_entorhinal_volume,Left_Lateral_Ventricle,Right_Lateral_Ventricle,Left_Inf_Lat_Vent,Right_Inf_Lat_Vent,Left_Amygdala,Right_Amygdala,lh_MeanThickness_thickness,rh_MeanThickness_thickness,CortexVol,APOE4,Sexo
-Perfil cognitivamente normal (A),71,17,1221886.0,3420.0,3421.0,1588.0,1603.0,4273.0,2999.0,444.0,335.0,1450.0,1613.0,2.332,2.331,354508.0,0,Femenino
-Perfil cognitivamente normal (B),73,18,1329008.0,3762.0,3814.0,2020.0,1704.0,4615.0,7243.0,533.0,298.0,1094.0,1397.0,2.329,2.284,385303.0,0,Femenino
-Perfil con demencia (C),81,18,1629692.0,2984.0,2648.0,1754.0,1293.0,29886.0,25780.0,1809.0,3376.0,910.0,1279.0,2.283,2.212,435689.0,0,Masculino
-Perfil con demencia (D),86,10,1217212.0,2520.0,2529.0,1401.0,1428.0,29211.0,22720.0,2932.0,2512.0,685.0,982.0,2.279,2.257,344606.0,1,Femenino
-Perfil limítrofe (E),63,12,1450433.0,2742.0,2890.0,2053.0,1608.0,18280.0,12151.0,548.0,672.0,1301.0,1014.0,2.381,2.206,388438.0,0,Masculino
-Perfil en el que los modelos no coinciden (F),74,13,1638557.0,4012.0,3830.0,2861.0,2925.0,29278.0,30394.0,1388.0,647.0,1663.0,1701.0,2.221,2.289,401861.0,1,Masculino
+Perfil cognitivamente normal (A),70.5,17,1221886.0,3420.0,3421.0,1588.0,1603.0,4273.0,2999.0,444.0,335.0,1450.0,1613.0,2.332,2.331,354508.0,0,Femenino
+Perfil cognitivamente normal (B),72.9,18,1329008.0,3762.0,3814.0,2020.0,1704.0,4615.0,7243.0,533.0,298.0,1094.0,1397.0,2.329,2.284,385303.0,0,Femenino
+Perfil con demencia (C),80.5,18,1629692.0,2984.0,2648.0,1754.0,1293.0,29886.0,25780.0,1809.0,3376.0,910.0,1279.0,2.283,2.212,435689.0,0,Masculino
+Perfil con demencia (D),86.2,10,1217212.0,2520.0,2529.0,1401.0,1428.0,29211.0,22720.0,2932.0,2512.0,685.0,982.0,2.279,2.257,344606.0,1,Femenino
+Perfil limítrofe (E),62.9,12,1450433.0,2742.0,2890.0,2053.0,1608.0,18280.0,12151.0,548.0,672.0,1301.0,1014.0,2.381,2.206,388438.0,0,Masculino
+Perfil en el que los modelos no coinciden (F),74.3,13,1638557.0,4012.0,3830.0,2861.0,2925.0,29278.0,30394.0,1388.0,647.0,1663.0,1701.0,2.221,2.289,401861.0,1,Masculino

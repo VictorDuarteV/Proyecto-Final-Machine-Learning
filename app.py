@@ -171,13 +171,17 @@ div[data-testid="stMarkdownContainer"] table.compacta th {font-size: 12px;}
 .stFormSubmitButton button {min-height: 50px; font-size: 16px;}
 .stFormSubmitButton button:hover {background: #0A3D47; border-color: #0A3D47; color: #FFFFFF;}
 [data-testid="stFileUploaderDropzone"] {background: #FAF8F4; border: 1px dashed #C9C2B4; padding: 8px 8px 8px 16px;}
-[data-testid="stFileUploaderDropzone"] {flex-direction: row-reverse; justify-content: space-between;}
+[data-testid="stFileUploaderDropzone"] {flex-direction: row-reverse; justify-content: space-between;
+                                          align-items: center;}
+[data-testid="InputInstructions"] {display: none;}
 [data-testid="stFileUploaderDropzoneInstructions"] > div > span {font-size: 0;}
 [data-testid="stFileUploaderDropzoneInstructions"] > div > span::after {content: "Arrastra un CSV con una o más personas";
     font-size: 14px; color: #56656D;}
 [data-testid="stFileUploaderDropzoneInstructions"] > div > small, [data-testid="stFileUploaderDropzoneInstructions"] svg,
-[data-testid="stFileUploaderDropzone"] button [data-testid="stIconMaterial"] {display: none;}
-[data-testid="stFileUploaderDropzone"] button {min-height: 36px;}
+[data-testid="stFileUploaderDropzone"] button span:has(> [data-testid="stIconMaterial"]) {display: none;}
+[data-testid="stFileUploaderDropzone"] button > div > span {gap: 0;}
+[data-testid="stFileUploaderDropzone"] button {min-height: 36px; margin: 0; align-self: center; gap: 0;
+                                                display: inline-flex; align-items: center; justify-content: center;}
 [data-testid="stFileUploaderDropzone"] button p {font-size: 0;}
 [data-testid="stFileUploaderDropzone"] button p::after {content: "Buscar archivo"; font-size: 14px;}
 [data-testid="stFileUploaderDropzoneInstructions"] {flex: 1; white-space: nowrap;}
@@ -220,11 +224,6 @@ def redondear3(x):
     return float(Decimal(repr(float(x))).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
 
 
-def entero(x):
-    """Redondea a entero hacia arriba en .5 (70.5 -> 71), como se hace a mano."""
-    return int(np.floor(float(x) + 0.5))
-
-
 # ---------------------------------------------------------------- carga de recursos
 @st.cache_resource
 def obtener_modelos():
@@ -263,7 +262,6 @@ CAMPOS_VOLUMEN = [
     ('Ventrículo lateral inferior', 'Left_Inf_Lat_Vent', 'Right_Inf_Lat_Vent'),
 ]
 OPCIONES_APOE4 = ['0', '1', '2', 'Desconocido']
-ENTERAS = ['Edad', 'Escolaridad']
 NUMERICAS = [c for c in VARIABLES if c not in ('APOE4', 'Sexo')]
 NOMBRES_CAMPO = {
     'Edad': 'Edad', 'Escolaridad': 'Escolaridad', 'ICV': 'Volumen intracraneal (ICV)',
@@ -278,10 +276,9 @@ for _nombre, _izq, _der in CAMPOS_VOLUMEN:
 
 # ---------------------------------------------------------------- estado del formulario
 def cargar_en_formulario(fila, origen):
-    """Copia los valores de un paciente (fila de un DataFrame o diccionario) a los campos.
-    Edad y escolaridad se capturan en años enteros."""
+    """Copia los valores de un paciente (fila de un DataFrame o diccionario) a los campos."""
     for col in NUMERICAS:
-        st.session_state['in_' + col] = entero(fila[col]) if col in ENTERAS else float(fila[col])
+        st.session_state['in_' + col] = float(fila[col])
     st.session_state['in_Sexo'] = fila['Sexo'] if fila['Sexo'] in metadata['categorias_sexo'] else 'Femenino'
     apoe = fila['APOE4']
     st.session_state['in_APOE4'] = 'Desconocido' if pd.isna(apoe) else str(int(float(apoe)))
@@ -301,6 +298,11 @@ def leer_formulario():
     return pd.DataFrame([fila])[VARIABLES]
 
 
+# Límites fijos (en años) para edad y escolaridad. Las medidas de la resonancia usan los límites
+# de plausibilidad de abajo (la mitad del mínimo y 1.5 veces el máximo de entrenamiento).
+LIMITES = {'Edad': (18, 110), 'Escolaridad': (0, 30)}
+
+
 def validar(paciente):
     """Devuelve (errores, avisos). Los errores impiden la predicción; los avisos no."""
     errores, avisos = [], []
@@ -308,6 +310,14 @@ def validar(paciente):
         valor = paciente[col].iloc[0]
         r = RANGOS[col]
         nombre = NOMBRES_CAMPO[col]
+        if col in LIMITES:
+            minimo, maximo = LIMITES[col]
+            if pd.isna(valor) or not minimo <= valor <= maximo:
+                errores.append(f'<b>{nombre}</b> debe estar entre {minimo} y {maximo} años.')
+            elif valor < r['min'] or valor > r['max']:
+                avisos.append(f'<b>{nombre}</b> = {valor:,.1f} está fuera del rango de entrenamiento '
+                              f'({r["min"]:,.1f} a {r["max"]:,.1f}); la predicción es menos confiable.')
+            continue
         if pd.isna(valor) or valor <= 0:
             errores.append(f'<b>{nombre}</b> debe ser un número mayor que 0.')
         elif valor < 0.5 * r['min'] or valor > 1.5 * r['max']:
@@ -317,6 +327,66 @@ def validar(paciente):
             avisos.append(f'<b>{nombre}</b> = {valor:,.2f} está fuera del rango de entrenamiento '
                           f'({r["min"]:,.2f} a {r["max"]:,.2f}); la predicción es menos confiable.')
     return errores, avisos
+
+
+def filas_texto(indices, maximo=5):
+    """[0, 3, 7] -> 'filas 1, 4, 8'; [2] -> 'fila 3' (números de fila empezando en 1)."""
+    numeros = [str(i + 1) for i in list(indices)[:maximo]]
+    palabra = 'fila' if len(indices) == 1 else 'filas'
+    return f'{palabra} ' + ', '.join(numeros) + (' y otras' if len(indices) > maximo else '')
+
+
+def leer_csv(archivo):
+    """Lee y revisa un CSV cargado. Devuelve (datos, problemas); si hay problemas, no se carga nada.
+    Acepta separador coma o punto y coma y archivos guardados desde Excel (UTF-8 o Latin-1)."""
+    datos = None
+    for codificacion in ('utf-8-sig', 'latin-1'):
+        try:
+            archivo.seek(0)
+            datos = pd.read_csv(archivo, sep=None, engine='python', encoding=codificacion)
+            break
+        except UnicodeDecodeError:
+            continue
+        except Exception:
+            return None, ['No se pudo leer el archivo. Verifica que sea un CSV válido.']
+    if datos is None:
+        return None, ['No se pudo leer el archivo. Verifica que sea un CSV válido.']
+    datos.columns = [str(c).strip() for c in datos.columns]
+    faltantes = [c for c in VARIABLES if c not in datos.columns]
+    if faltantes:
+        return None, ['Al archivo le faltan estas columnas: ' + ', '.join(faltantes) + '.']
+    if datos.empty:
+        return None, ['El archivo no tiene filas con datos.']
+
+    problemas = []
+    for col in NUMERICAS:
+        original = datos[col]
+        numeros = pd.to_numeric(original.astype(str).str.strip().replace('', np.nan), errors='coerce')
+        vacias = original.isna() | original.astype(str).str.strip().eq('')
+        no_numericas = numeros.isna() & ~vacias
+        if vacias.any():
+            problemas.append(f'<b>{col}</b> tiene valores vacíos ({filas_texto(np.flatnonzero(vacias))}). '
+                             'Solo APOE4 puede ir vacío.')
+        if no_numericas.any():
+            problemas.append(f'<b>{col}</b> tiene valores que no son números '
+                             f'({filas_texto(np.flatnonzero(no_numericas))}).')
+        datos[col] = numeros
+
+    sexo = datos['Sexo'].astype(str).str.strip().str.capitalize()
+    sexo_invalido = ~sexo.isin(metadata['categorias_sexo'])
+    if sexo_invalido.any():
+        problemas.append(f'<b>Sexo</b> debe ser Femenino o Masculino '
+                         f'({filas_texto(np.flatnonzero(sexo_invalido))}).')
+    datos['Sexo'] = sexo
+
+    apoe = pd.to_numeric(datos['APOE4'], errors='coerce')
+    apoe_vacio = datos['APOE4'].isna() | datos['APOE4'].astype(str).str.strip().eq('')
+    apoe_invalido = ~apoe_vacio & ~apoe.isin([0, 1, 2])
+    if apoe_invalido.any():
+        problemas.append(f'<b>APOE4</b> debe ser 0, 1, 2 o ir vacío si se desconoce '
+                         f'({filas_texto(np.flatnonzero(apoe_invalido))}).')
+    datos['APOE4'] = apoe.where(~apoe_vacio)
+    return datos, problemas
 
 
 def metricas_desde_matriz(mc):
@@ -334,7 +404,7 @@ def metricas_desde_matriz(mc):
 
 
 # ---------------------------------------------------------------- encabezado y navegación
-SECCIONES = ['Proyecto', 'Predicción', 'Características', 'Comparación', 'Interpretación']
+SECCIONES = ['Proyecto', 'Características', 'Predicción', 'Comparación', 'Interpretación']
 with st.container(key='encabezado'):
     c_marca, c_nav = st.columns([1, 2.4], vertical_alignment='center')
     with c_marca:
@@ -434,28 +504,27 @@ elif seccion == 'Predicción':
         with e2:
             archivo = st.file_uploader('Archivo CSV', type='csv')
             if archivo is not None:
-                try:
-                    datos_csv = pd.read_csv(archivo)
-                    faltantes = [c for c in VARIABLES if c not in datos_csv.columns]
-                    if faltantes:
-                        aviso('Al archivo le faltan estas columnas: ' + ', '.join(faltantes), 'error')
-                    elif datos_csv[NUMERICAS].isna().any().any():
-                        aviso('El archivo tiene valores vacíos en columnas numéricas (solo APOE4 puede ir vacío).',
-                              'error')
-                    else:
-                        f1, f2 = st.columns([1, 1.6], vertical_alignment='bottom')
-                        fila_csv = int(f1.number_input('Fila', 1, len(datos_csv), 1))
-                        f2.button('Cargar fila', width='stretch', on_click=cargar_en_formulario,
-                                  args=(datos_csv.iloc[fila_csv - 1], f'Fila {fila_csv} de {archivo.name}'))
-                except Exception:
-                    aviso('No se pudo leer el archivo. Verifica que sea un CSV válido.', 'error')
+                datos_csv, problemas = leer_csv(archivo)
+                if problemas:
+                    for problema in problemas:
+                        aviso(problema, 'error')
+                else:
+                    f1, f2 = st.columns([1, 1.6], vertical_alignment='bottom')
+                    fila_csv = int(f1.number_input('Fila', 1, len(datos_csv), 1))
+                    fila = datos_csv.iloc[fila_csv - 1]
+                    errores_fila, _ = validar(pd.DataFrame([fila])[VARIABLES])
+                    f2.button('Cargar fila', width='stretch', on_click=cargar_en_formulario,
+                              disabled=bool(errores_fila),
+                              args=(fila, f'Fila {fila_csv} de {archivo.name}'))
+                    for e in errores_fila:
+                        aviso(f'Fila {fila_csv}: {e}', 'error')
 
     with st.form('formulario'):
         html('<h2 class="subseccion">Datos demográficos y genética</h2>')
         d1, d2, d3, d4 = st.columns(4)
-        d1.number_input('Edad (años)', min_value=0, step=1, format='%d', key='in_Edad')
+        d1.number_input('Edad (años)', min_value=0.0, step=1.0, format='%.1f', key='in_Edad')
         d2.selectbox('Sexo', metadata['categorias_sexo'], key='in_Sexo')
-        d3.number_input('Escolaridad (años)', min_value=0, step=1, format='%d', key='in_Escolaridad')
+        d3.number_input('Escolaridad (años)', min_value=0.0, step=1.0, format='%.0f', key='in_Escolaridad')
         d4.selectbox('Copias del alelo APOE4', OPCIONES_APOE4, key='in_APOE4')
 
         html('<h2 class="subseccion" style="margin-top: 20px">Resonancia magnética (FreeSurfer)</h2>'
@@ -468,9 +537,9 @@ elif seccion == 'Predicción':
         for nombre, izq, der in CAMPOS_VOLUMEN:
             r1, r2, r3 = st.columns(anchos, vertical_alignment='center')
             r1.markdown(f'<span class="estructura">{nombre}</span>', unsafe_allow_html=True)
-            r2.number_input(f'{nombre} izquierdo', min_value=0.0, step=10.0, format='%.0f', key='in_' + izq,
+            r2.number_input(f'{nombre} izquierdo', min_value=0.0, step=10.0, format='%.1f', key='in_' + izq,
                             label_visibility='collapsed')
-            r3.number_input(f'{nombre} derecho', min_value=0.0, step=10.0, format='%.0f', key='in_' + der,
+            r3.number_input(f'{nombre} derecho', min_value=0.0, step=10.0, format='%.1f', key='in_' + der,
                             label_visibility='collapsed')
         r1, r2, r3 = st.columns(anchos, vertical_alignment='center')
         r1.markdown('<span class="estructura">Grosor cortical medio (mm)</span>', unsafe_allow_html=True)
@@ -593,8 +662,10 @@ elif seccion == 'Características':
             texto = valor
         elif pd.isna(valor):
             texto = 'Desconocido'
-        elif col in ('Edad', 'Escolaridad', 'APOE4'):
+        elif col in ('Escolaridad', 'APOE4'):
             texto = f'{valor:.0f}'
+        elif col == 'Edad':
+            texto = f'{valor:.1f}'
         else:
             texto = f'{valor:,.3f}'
         filas += (f'<tr><td class="fuerte">{metadata["etiquetas_variables"][col]}</td><td class="der">{texto}</td>'

@@ -50,8 +50,10 @@ experimentos/                   Notebook de los experimentos (sin salidas) e ins
 
 En línea no requiere instalar nada: se abre https://proyecto-final-ml.streamlit.app, se elige la
 sección **Predicción**, se capturan los datos (o se carga un perfil de ejemplo o un CSV con las mismas
-columnas que `datos/perfiles_sinteticos.csv`) y se presiona **Clasificar**. La aplicación pide la edad
-y la escolaridad en años enteros.
+columnas que `datos/perfiles_sinteticos.csv`) y se presiona **Clasificar**. La edad debe estar entre 18 y 110 años y la
+escolaridad entre 0 y 30; los modelos se entrenaron con edades de 50.5 a 90.9 años, así que fuera de ese
+rango la aplicación avisa que la predicción es menos confiable. Un CSV se revisa antes de cargarlo
+(columnas, valores numéricos, sexo y APOE4) y una fila con valores no válidos no se puede cargar.
 
 Ejecución local (requiere Python 3.13, la versión con la que se guardaron los modelos):
 

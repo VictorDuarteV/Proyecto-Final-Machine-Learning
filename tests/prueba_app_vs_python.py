@@ -10,8 +10,6 @@ Uso (desde la carpeta del proyecto):
    en el formulario, presiona Clasificar y lee las probabilidades de la tabla de resultados
    que se muestra en pantalla.
 
-La aplicación pide la edad y la escolaridad en años enteros, así que a "Python directo" se le dan
-los mismos valores redondeados (70.5 -> 71): las dos partes reciben exactamente los mismos datos.
 """
 import re
 import sys
@@ -28,8 +26,6 @@ from streamlit.testing.v1 import AppTest  # noqa: E402
 
 archivo = Path(sys.argv[1]) if len(sys.argv) > 1 else RAIZ / 'datos' / 'perfiles_sinteticos.csv'
 pacientes = pd.read_csv(archivo)
-for col in ('Edad', 'Escolaridad'):
-    pacientes[col] = np.floor(pacientes[col] + 0.5).astype(int)
 metadata = F.cargar_metadata()
 modelos = F.cargar_modelos()
 numericas = [c for c in metadata['variables_originales'] if c not in ('APOE4', 'Sexo')]
@@ -54,7 +50,7 @@ for i, paciente in pacientes.iterrows():
     app = AppTest.from_file(str(RAIZ / 'app.py'), default_timeout=120).run()
     app.radio(key='seccion').set_value('Predicción').run()
     for col in numericas:
-        valor = int(paciente[col]) if col in ('Edad', 'Escolaridad') else float(paciente[col])
+        valor = float(paciente[col])
         app.number_input(key='in_' + col).set_value(valor)
     app.selectbox(key='in_Sexo').set_value(paciente['Sexo'])
     apoe = 'Desconocido' if pd.isna(paciente['APOE4']) else str(int(paciente['APOE4']))
